@@ -20,14 +20,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
 	int currentState = MENU_STATE;
-	int rocketX = 250;
-	int rocketY = 700;
+	ObjectManager obj;
 	
 	GamePanel(){
 		timer = new Timer(1000/60, this);
 		titleFont = new Font("Arial", Font.PLAIN, 48);
 		smallerFont = new Font("Arial", Font.PLAIN, 24);
-		rocket = new Rocketship(rocketX, rocketY, 50, 50);
+		rocket = new Rocketship(250, 700, 50, 50);
+		obj = new ObjectManager(rocket);
 	}
 
 	void startGame() {
@@ -37,7 +37,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	void drawGameState(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
-		rocket.draw(g);
+		obj.draw(g);
 	}
 	
 	void drawMenuState(Graphics g) {
@@ -63,7 +63,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	}
 	
 	void updateGameState() {
-		rocket.update();
+		obj.update();
+		obj.manageEnemies();
 	}
 	
 	void updateMenuState() {
@@ -102,28 +103,43 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		System.out.println("a message");
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if (currentState == 2) {
-				currentState = MENU_STATE;
-			} else {
-				currentState++;
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (currentState == 2) {
+					currentState = MENU_STATE;
+				} else {
+					currentState++;
+				}
 			}
-		}
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			rocketY -= 10;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			rocketY += 10;
-		}
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				rocket.movingState = "up";
+			} else
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				rocket.movingState = "down";
+			} else
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				rocket.movingState = "left";
+			} else
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				rocket.movingState = "right";
+			}
+			
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				
+				obj.addProjectile(new Projectile(rocket.x + 20, rocket.y + 20, 10, 10));
+			}
+			
+		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		System.out.println("a message");
+		int code = e.getKeyCode();
+		if (code == KeyEvent.VK_UP || code == KeyEvent.VK_DOWN ||code == KeyEvent.VK_LEFT || code == KeyEvent.VK_RIGHT) {
+			rocket.movingState = "";
+		}
 	}
 }
