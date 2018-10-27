@@ -7,6 +7,7 @@ public class Rocketship extends GameObject{
 	String movingState = "";
 	
 	void update() {
+		super.update();
 		if (movingState.equals("up")){
 			up();
 		} else
@@ -22,10 +23,9 @@ public class Rocketship extends GameObject{
 	}
 	
 	void draw(Graphics g) {
-		g.setColor(Color.BLUE);
-        g.fillRect(x, y, width, height);
-
+		g.drawImage(GamePanel.rocketImg, x, y, width, height, null);
 	}
+
 	
 	Rocketship(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -34,19 +34,31 @@ public class Rocketship extends GameObject{
 	}
 	
 	void up() {
-		y = y - speed;
+		if (y > 0) {
+			y = y - speed;
+		}
 	}
 	
 	void down() {
+		if (y < 750) {
 		y = y + speed;
+		} else {
+			y = 750;
+		}
 	}
 	
 	void left() {
-		x = x - speed;
+		if (x > 0) {
+			x = x - speed;
+		}
 	}
 	
 	void right() {
+		if (x < 450) {
 		x = x + speed;
+		} else {
+			x = 450;
+		}
 	}
 
 }
